@@ -46,28 +46,39 @@ source venv/bin/activate    # On Windows, use: venv\Scripts\activate
 
 # Install required packages
 pip install -r requirements.txt
+```
 
 ### Database Configuration 
 -- Create the database
+```bash
 CREATE DATABASE hms;
+```
 
 -- Create the dedicated, restricted application user
+```bash
 CREATE USER 'hms_user'@'localhost' IDENTIFIED BY 'a_secure_password';
+```
 
 -- Grant minimal privileges
+```bash
 GRANT SELECT, INSERT, UPDATE, DELETE ON hms.* TO 'hms_user'@'localhost';
 FLUSH PRIVILEGES;
+```
 
 ### Update Database Configuration
+```bash
 DB_CONFIG = {
     'host': 'localhost',
     'user': 'hms_user',
     'password': 'a_secure_password',  # Replace with your actual password
     'database': 'hms'
 }
+```
 
 ### Running the application
+```bash
 python app.py
+```
 
 Click the link in the terminal to access the app
 
