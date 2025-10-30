@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="space-y-8">
+
+    <!-- Customer Info Card -->
+    <div class="bg-white p-6 rounded-xl container-shadow">
+        <h2 class="text-2xl font-bold text-indigo-600 mb-4">Customer: {{ customer.Name }} ({{ customer.CustID }})</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 text-sm text-gray-700">
+            <div>
+                <p class="font-semibold">Phone:</p>
+                <p>{{ customer.Phone_No }}</p>
+            </div>
+            <div>
+                <p class="font-semibold">ID Type:</p>
+                <p>{{ customer.Govt_ID_Type }}</p>
+            </div>
+            <div>
+                <p class="font-semibold">ID Number:</p>
+                <p>{{ customer.Govt_ID_Number }}</p>
+            </div>
+            <div class="sm:col-span-2 md:col-span-3">
+                <p class="font-semibold">Address:</p>
+                <p>{{ customer.Address }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Actions Panel -->
+    <div class="bg-white p-6 rounded-xl container-shadow">
+        <h3 class="text-xl font-bold text-indigo-600 mb-4">Active & Pending Bookings</h3>
+
+        {% if bookings %}
+        <div class="space-y-4">
+            {% for booking in bookings %}
+            <div
+                class="border border-gray-200 p-4 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center">
+
+                <!-- Booking Details -->
+                <div class="mb-4 md:mb-0 space-y-1">
+                    <p class="text-lg font-bold text-gray-900">Room #{{ booking.roomno }}</p>
+                    <p class="text-sm text-gray-600">
+                        Check-in: <span class="font-medium">{{ booking.checkin }}</span>
+                        | Check-out: <span class="font-medium">{{ booking.checkout }}</span>
+                    </p>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {% if booking.status == 'checkedin' %}bg-green-100 text-green-800
+                            {% elif booking.status == 'not_arrived' %}bg-yellow-100 text-yellow-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        Status: {{ booking.status.replace('_', ' ').capitalize() }}
+                    </span>
+                </div>
+
+                <!-- Actions -->
+                <div>
+                    {% if booking.status == 'not_arrived' %}
+                    <form method="POST" action="{{ url_for('checkin_action', cust_id=customer.CustID) }}"
+                        class="inline-block">
+                        <button type="submit"
+                            class="px-4 py-2 bg-green-600 text-white font-semibold rounded-lg shadow-md hover:bg-green-700 transition">
+                            <i class="fas fa-sign-in-alt mr-1"></i> Check In
+                        </button>
+                    </form>
+                    {% elif booking.status == 'checkedin' %}
+                    <form method="POST"
+                        action="{{ url_for('checkout_action', cust_id=customer.CustID, room_no=booking.roomno) }}"
+                        class="inline-block">
+                        <button type="submit"
+                            class="px-4 py-2 bg-red-600 text-white font-semibold rounded-lg shadow-md hover:bg-red-700 transition">
+                            <i class="fas fa-sign-out-alt mr-1"></i> Check Out
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="p-6 text-center border-2 border-dashed border-gray-300 rounded-lg">
+            <i class="fas fa-calendar-times text-4xl text-gray-400 mb-3"></i>
+            <p class="text-gray-500">This customer has no active or pending bookings.</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<div class="mt-8">
+    <a href="{{ url_for('arrival_management') }}" class="text-indigo-600 hover:text-indigo-800 font-medium transition">
+        <i class="fas fa-chevron-left mr-1"></i> Back to Arrival Overview
+    </a>
+</div>
+
+{% endblock %}

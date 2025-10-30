@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMS | {{ title }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+        }
+
+        .container-shadow {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .flash-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .flash-error {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .flash-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .flash-info {
+            background-color: #e0f2f1;
+            color: #0f766e;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header / Navigation Bar -->
+    <header class="bg-indigo-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="{{ url_for('home') }}" class="text-2xl font-bold tracking-tight">
+                    <i class="fas fa-bed mr-2"></i>GLIDE INN HMS
+                </a>
+                <nav class="hidden md:flex space-x-4">
+                    <a href="{{ url_for('home') }}"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-150">Home</a>
+                    <a href="{{ url_for('booking') }}"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-150">Booking</a>
+                    <a href="{{ url_for('arrival_management') }}"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-150">Arrivals/Departures</a>
+                    <a href="{{ url_for('records') }}"
+                        class="px-3 py-2 rounded-md text-sm font-medium hover:bg-indigo-700 transition duration-150">Records</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-6 space-y-3">
+            {% for category, message in messages %}
+            <div
+                class="p-4 rounded-lg shadow-md {{ 'flash-success' if category == 'success' else 'flash-error' if category == 'error' else 'flash-warning' if category == 'warning' else 'flash-info' }}">
+                <p class="font-medium text-sm">{{ message }}</p>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-6">{{ title }}</h1>
+        {% block content %}{% endblock %}
+    </main>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+
+</html>
